@@ -32,6 +32,7 @@
                     <tr class="bg-gray-50 text-gray-400 uppercase text-[10px] font-black tracking-[0.2em]">
                         <th class="px-8 py-4 border-b">Tahun</th>
                         <th class="px-8 py-4 border-b">Komponen</th>
+                        <th class="px-8 py-4 border-b">Deskripsi</th>
                         <th class="px-8 py-4 border-b">Unsur Utama</th>
                         <th class="px-8 py-4 border-b text-center">Link Arsip</th>
                         <th class="px-8 py-4 border-b text-center">Tanggal</th>
@@ -45,10 +46,13 @@
                             <span class="bg-green-100 text-green-700 px-3 py-1 rounded-lg font-bold text-xs">{{ $archive->year }}</span>
                         </td>
                         <td class="px-8 py-6 text-gray-700 font-semibold text-xs leading-relaxed max-w-[200px]">
-                            {{ $archive->component->area->name }}
+                            {{ $archive->component->area->code }} - {{ $archive->component->area->name }}
                         </td>
-                        <td class="px-8 py-6 text-gray-500 text-xs leading-relaxed max-w-[300px]">
+                        <td class="px-8 py-6 text-blue-600 font-bold text-xs">
                             {{ $archive->component->code }} - {{ $archive->component->name }}
+                        </td>
+                        <td class="px-8 py-6 text-gray-500 text-xs leading-relaxed max-w-[200px]">
+                            {{ $archive->description ?? '-' }}
                         </td>
                         <td class="px-8 py-6 text-center">
                             <a href="{{ $archive->google_drive_link }}" target="_blank" class="inline-flex items-center space-x-1 border border-green-200 text-green-600 px-3 py-1 rounded-lg hover:bg-green-50 transition-all text-[10px] font-bold">

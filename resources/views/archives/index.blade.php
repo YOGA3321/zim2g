@@ -65,17 +65,17 @@
                                         <i class="fas {{ $archive->file_name ? 'fa-file-pdf' : 'fa-file-upload' }}"></i>
                                     </div>
                                     <div class="min-w-0">
-                                        <h4 class="font-bold text-gray-800 truncate">{{ $archive->file_name ?? 'File Belum Diunggah' }}</h4>
-                                        <p class="text-xs text-gray-500 truncate mt-0.5">{{ $archive->description ?? 'Tidak ada deskripsi' }}</p>
+                                        <h4 class="font-bold text-gray-800 break-words">{{ $archive->file_name ?? 'File Belum Diunggah' }}</h4>
+                                        <p class="text-xs text-gray-500 mt-1 leading-relaxed max-w-xs">{{ $archive->description ?? 'Tidak ada deskripsi' }}</p>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-8 py-6">
                                 <div class="font-bold text-gray-700 text-sm">
-                                    {{ $archive->component->area->name }}
+                                    {{ $archive->component->area->code }} - {{ $archive->component->area->name }}
                                 </div>
                                 <div class="text-xs text-blue-600 font-semibold mt-1">
-                                    <i class="fas fa-chevron-right text-[10px] mr-1"></i> {{ $archive->component->name }}
+                                    <i class="fas fa-chevron-right text-[10px] mr-1"></i> {{ $archive->component->code }} - {{ $archive->component->name }}
                                 </div>
                             </td>
                             <td class="px-8 py-6 text-center">

@@ -45,6 +45,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/master-data/components/{ziComponent}', [MasterDataController::class, 'updateComponent'])->name('master-data.components.update');
     Route::delete('/master-data/components/{ziComponent}', [MasterDataController::class, 'destroyComponent'])->name('master-data.components.destroy');
 
+    Route::get('/api/components-by-area/{area}', function ($areaId) {
+        return \App\Models\ZiComponent::where('zi_area_id', $areaId)->get();
+    });
 
 
 

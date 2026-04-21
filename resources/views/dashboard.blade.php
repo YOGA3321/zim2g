@@ -5,32 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Google Drive Info -->
-        <div class="md:col-span-3 bg-gradient-to-r from-[#1a237e] to-[#283593] rounded-2xl p-6 shadow-xl flex items-center justify-between text-white border border-white/10">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-2xl backdrop-blur-sm">
-                    <i class="fab fa-google-drive"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold opacity-80 uppercase tracking-wider">Koneksi Google Drive</h3>
-                    <p class="text-xl font-bold mt-0.5">
-                        {{ $googleSetting->google_email ?? 'Belum Terhubung' }}
-                    </p>
-                </div>
-            </div>
-            @if($googleSetting && $googleSetting->refresh_token)
-                <div class="px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-lg flex items-center gap-2 text-sm font-bold">
-                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                    Terhubung
-                </div>
-            @else
-                <a href="{{ route('google.auth') }}" class="px-6 py-2 bg-white text-[#1a237e] font-bold rounded-lg hover:bg-blue-50 transition-all shadow-lg">
-                    Hubungkan Sekarang
-                </a>
-            @endif
-        </div>
-
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
         <!-- Total Archives -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center justify-center text-center">
             <div class="bg-blue-50 p-4 rounded-xl mb-4">

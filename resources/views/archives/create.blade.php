@@ -23,7 +23,7 @@
                                 class="w-full rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                             <option value="">-- Pilih Kegiatan --</option>
                             @foreach($areas as $area)
-                                <option value="{{ $area->id }}">{{ $area->name }}</option>
+                                <option value="{{ $area->id }}">{{ $area->code }} - {{ $area->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -34,7 +34,7 @@
                             <i class="fas fa-list-ul text-blue-600"></i> Pilih Sub Kegiatan
                         </label>
                         <select id="sub_kegiatan" name="zi_component_id" required disabled
-                                class="w-full rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 opacity-60">
+                                class="w-full rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 opacity-60 cursor-not-allowed">
                             <option value="">-- Pilih Sub Kegiatan --</option>
                         </select>
                     </div>
@@ -58,8 +58,8 @@
                         <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
                             <i class="fas fa-info-circle text-blue-600"></i> Deskripsi Singkat
                         </label>
-                        <input type="text" name="description" placeholder="Contoh: Laporan Triwulan 1"
-                               class="w-full rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                        <textarea name="description" rows="3" placeholder="Contoh: Laporan Triwulan 1 Manajemen Perubahan"
+                               class="w-full rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"></textarea>
                     </div>
                 </div>
 
@@ -116,7 +116,7 @@
             const areaId = this.value;
             subKegiatanSelect.innerHTML = '<option value="">-- Memuat Sub Kegiatan... --</option>';
             subKegiatanSelect.disabled = true;
-            subKegiatanSelect.classList.add('opacity-60');
+            subKegiatanSelect.classList.add('opacity-60', 'cursor-not-allowed');
 
             if (!areaId) {
                 subKegiatanSelect.innerHTML = '<option value="">-- Pilih Sub Kegiatan --</option>';
@@ -131,12 +131,12 @@
                 components.forEach(comp => {
                     const option = document.createElement('option');
                     option.value = comp.id;
-                    option.textContent = comp.name;
+                    option.textContent = `${comp.code} - ${comp.name}`;
                     subKegiatanSelect.appendChild(option);
                 });
 
                 subKegiatanSelect.disabled = false;
-                subKegiatanSelect.classList.remove('opacity-60', 'bg-gray-50');
+                subKegiatanSelect.classList.remove('opacity-60', 'bg-gray-50', 'cursor-not-allowed');
             } catch (error) {
                 console.error('Gagal mengambil data:', error);
                 subKegiatanSelect.innerHTML = '<option value="">-- Gagal memuat data --</option>';
