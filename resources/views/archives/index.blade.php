@@ -85,23 +85,15 @@
                             </td>
                             <td class="px-8 py-6">
                                 <div class="flex items-center gap-2">
-                                    @if($archive->file_name)
-                                        <a href="{{ route('archives.show', $archive->id) }}" 
-                                           class="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                                           title="Lihat Detail Wadah">
-                                            <i class="fas fa-folder-open"></i>
-                                        </a>
-                                    @else
-                                        <button onclick="openUploadModal('{{ $archive->id }}', '{{ $archive->component->name }}')"
-                                                class="px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl hover:bg-amber-600 hover:text-white transition-all text-xs font-bold flex items-center gap-2">
-                                            <i class="fas fa-upload"></i> Unggah File
-                                        </button>
-                                    @endif
-
+                                    <a href="{{ route('archives.show', $archive->id) }}" 
+                                       class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-bold text-xs flex items-center gap-2">
+                                        <i class="fas fa-folder-open"></i> BUKA WADAH
+                                    </a>
                                     @if(auth()->user()->role === 'admin')
-                                    <form action="{{ route('archives.destroy', $archive->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus arsip ini?')">
+                                    <form id="delete-form-archive-{{ $archive->id }}" action="{{ route('archives.destroy', $archive->id) }}" method="POST">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                                        <button type="button" onclick="confirmDelete('archive-{{ $archive->id }}', 'Wadah ini dan seluruh isinya di Google Drive akan dihapus permanen!')" 
+                                                class="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>

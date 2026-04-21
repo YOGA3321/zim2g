@@ -16,7 +16,7 @@ class GoogleDriveService
     {
         $setting = GoogleSetting::first();
         if (!$setting || !$setting->refresh_token) {
-            throw new \Exception('Google Drive not connected.');
+            return; // Don't throw exception here
         }
 
         $this->client = new Client();
@@ -33,6 +33,12 @@ class GoogleDriveService
         }
 
         $this->service = new Drive($this->client);
+    }
+
+    public function isReady()
+    {
+        $setting = GoogleSetting::first();
+        return $setting && $setting->refresh_token && $this->service;
     }
 
     public function upload($filePath, $fileName, $folderId = null)
@@ -54,5 +60,49 @@ class GoogleDriveService
         ]);
 
         return $file;
+    }
+
+    public function setPublic($fileId)
+    {
+        try {
+            $permission = new Drive\Permission([
+                'type' => 'anyone',
+                'role' => 'reader',
+            ]);
+            $this->service->permissions->create($fileId, $permission);
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Gagal mengatur akses publik Drive: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function deleteFile($fileId)
+    {
+        try {
+            $this->service->files->delete($fileId);
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Gagal hapus file di Drive: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function createFolder($folderName, $parentFolderId = null)
+    {
+        $setting = GoogleSetting::first();
+        $parentFolder = $parentFolderId ?? $setting->root_folder_id;
+
+        $fileMetadata = new Drive\DriveFile([
+            'name' => $folderName,
+            'mimeType' => 'application/vnd.google-apps.folder',
+            'parents' => [$parentFolder]
+        ]);
+
+        $folder = $this->service->files->create($fileMetadata, [
+            'fields' => 'id, webViewLink'
+        ]);
+
+        return $folder;
     }
 }

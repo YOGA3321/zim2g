@@ -10,9 +10,7 @@ class Archive extends Model
         'user_id', 
         'zi_component_id', 
         'year', 
-        'file_name', 
-        'google_drive_file_id', 
-        'google_drive_link', 
+        'google_drive_folder_id',
         'description'
     ];
 
@@ -24,5 +22,10 @@ class Archive extends Model
     public function component()
     {
         return $this->belongsTo(ZiComponent::class, 'zi_component_id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(ArchiveFile::class);
     }
 }

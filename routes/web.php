@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/archives/{id}', [ArchiveController::class, 'show'])->name('archives.show');
     Route::post('/archives', [ArchiveController::class, 'store'])->name('archives.store');
     Route::post('/archives/{id}/update-file', [ArchiveController::class, 'updateFile'])->name('archives.update-file');
+    Route::delete('/archives/files/{id}', [ArchiveController::class, 'destroyFile'])->name('archives.destroy-file');
     Route::delete('/archives/{archive}', [ArchiveController::class, 'destroy'])->name('archives.destroy');
 
     Route::resource('users', UserController::class);
