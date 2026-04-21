@@ -27,7 +27,7 @@ class ArchiveController extends Controller
                 });
             }
             
-            return $query->latest()->get();
+            return $query->latest()->paginate(10);
         });
 
         $areas = \Illuminate\Support\Facades\Cache::remember('all_areas', 3600, function() {
@@ -45,7 +45,7 @@ class ArchiveController extends Controller
     public function myArchives()
     {
         $archives = \App\Models\Archive::where('user_id', auth()->id())
-            ->with('subComponent.component.area')
+            ->with('component.area')
             ->latest()
             ->get();
         return view('archives.my', compact('archives'));

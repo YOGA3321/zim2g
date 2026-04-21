@@ -31,9 +31,9 @@
                 <thead>
                     <tr class="bg-gray-50 text-gray-400 uppercase text-[10px] font-black tracking-[0.2em]">
                         <th class="px-8 py-4 border-b">Tahun</th>
-                        <th class="px-8 py-4 border-b">Komponen</th>
+                        <th class="px-8 py-4 border-b">Kegiatan</th>
+                        <th class="px-8 py-4 border-b">Sub Kegiatan</th>
                         <th class="px-8 py-4 border-b">Deskripsi</th>
-                        <th class="px-8 py-4 border-b">Unsur Utama</th>
                         <th class="px-8 py-4 border-b text-center">Link Arsip</th>
                         <th class="px-8 py-4 border-b text-center">Tanggal</th>
                         <th class="px-8 py-4 border-b text-center">Aksi</th>
@@ -81,7 +81,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-8 py-12 text-center text-gray-400 italic">Belum ada arsip saya.</td>
+                        <td colspan="7" class="px-8 py-12 text-center text-gray-400 italic">Belum ada arsip saya.</td>
                     </tr>
                     @endforelse
                 </tbody>
