@@ -50,19 +50,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Route untuk fix storage link di shared hosting
-    Route::get('/storage-link', function () {
-        $target = storage_path('app/public');
-        $shortcut = public_path('storage');
-        
-        if (file_exists($shortcut)) {
-            return "Storage link already exists.";
-        }
-        
-        app('files')->link($target, $shortcut);
-        return "Storage link created successfully.";
-    })->middleware('can:admin');
 });
 
 require __DIR__.'/auth.php';

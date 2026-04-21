@@ -1,4 +1,4 @@
-name: Deploy to Hostinger
+name: Deploy via SSH (Custom Port)
 
 on:
   push:
@@ -26,18 +26,26 @@ jobs:
           npm install
           npm run build
 
-      - name: Sync Files to Hostinger (FTP)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Deploy to Server via SSH
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i --delete"
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+          EXCLUDE: "/node_modules/, /.git/, /storage/app/temp/"
+
+      - name: Run Remote Commands
+        uses: appleboy/ssh-action@master
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          # Pastikan folder target di Hostinger sesuai (misal: /public_html/zi)
-          server-dir: ./ 
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/storage/app/temp/**
-            **/tests/**
-            .env
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{ secrets.REMOTE_TARGET }}
+            php artisan storage:link || true
+            php artisan migrate --force
+            php artisan optimize
