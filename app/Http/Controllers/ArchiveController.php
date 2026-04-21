@@ -105,6 +105,8 @@ class ArchiveController extends Controller
             if (file_exists($fullPath)) unlink($fullPath);
             return back()->withErrors(['file' => 'Gagal mengunggah ke Google Drive: ' . $e->getMessage()]);
         }
+    }
+
     public function destroy($id)
     {
         $archive = \App\Models\Archive::findOrFail($id);

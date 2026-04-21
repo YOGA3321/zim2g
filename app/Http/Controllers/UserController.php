@@ -15,7 +15,7 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    public function store(\Illuminate\Http\Request $request)
+    public function store(Request $request)
     {
         if (auth()->user()->role !== 'admin') {
             abort(403);
@@ -47,7 +47,7 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(\Illuminate\Http\Request $request, \App\Models\User $user)
+    public function update(Request $request, \App\Models\User $user)
     {
         if (auth()->user()->role !== 'admin') {
             abort(403);
