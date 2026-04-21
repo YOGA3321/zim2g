@@ -63,52 +63,82 @@ class ArchiveController extends Controller
     public function store(Request $request, \App\Services\GoogleDriveService $driveService)
     {
         if (auth()->user()->role !== 'admin') {
-            abort(403, 'User cannot add archives.');
+            abort(403, 'Hanya admin yang dapat membuat wadah arsip.');
         }
 
         $request->validate([
             'zi_component_id' => 'required|exists:zi_components,id',
             'year' => 'required|integer',
+            'file' => 'nullable|file',
+        ]);
+
+        $archiveData = [
+            'user_id' => auth()->id(),
+            'zi_component_id' => $request->zi_component_id,
+            'year' => $request->year,
+            'description' => $request->description,
+        ];
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            if (!\Illuminate\Support\Facades\Storage::exists('temp')) {
+                \Illuminate\Support\Facades\Storage::makeDirectory('temp');
+            }
+            $tempPath = $file->storeAs('temp', $fileName);
+            $fullPath = \Illuminate\Support\Facades\Storage::path($tempPath);
+
+            try {
+                $googleFile = $driveService->upload($fullPath, $file->getClientOriginalName());
+                $archiveData['file_name'] = $file->getClientOriginalName();
+                $archiveData['google_drive_file_id'] = $googleFile->id;
+                $archiveData['google_drive_link'] = $googleFile->webViewLink;
+                unlink($fullPath);
+            } catch (\Exception $e) {
+                if (file_exists($fullPath)) unlink($fullPath);
+                return back()->withErrors(['file' => 'Gagal mengunggah ke Google Drive: ' . $e->getMessage()]);
+            }
+        }
+
+        \App\Models\Archive::create($archiveData);
+        \Illuminate\Support\Facades\Cache::flush();
+
+        return redirect()->route('dashboard')->with('success', 'Arsip berhasil dibuat.');
+    }
+
+    public function updateFile(Request $request, $id, \App\Services\GoogleDriveService $driveService)
+    {
+        $request->validate([
             'file' => 'required|file',
         ]);
 
+        $archive = \App\Models\Archive::findOrFail($id);
         $file = $request->file('file');
         $fileName = time() . '_' . $file->getClientOriginalName();
-        
-        // Save to temp
-        $tempPath = $file->storeAs('temp', $fileName);
-        $fullPath = storage_path('app/' . $tempPath);
 
-        \Illuminate\Support\Facades\Log::info('Proses Upload Dimulai', ['file' => $fileName]);
+        if (!\Illuminate\Support\Facades\Storage::exists('temp')) {
+            \Illuminate\Support\Facades\Storage::makeDirectory('temp');
+        }
+        $tempPath = $file->storeAs('temp', $fileName);
+        $fullPath = \Illuminate\Support\Facades\Storage::path($tempPath);
 
         try {
-            // Upload to Google Drive
             $googleFile = $driveService->upload($fullPath, $file->getClientOriginalName());
             
-            \App\Models\Archive::create([
-                'user_id' => auth()->id(),
-                'zi_component_id' => $request->zi_component_id,
-                'year' => $request->year,
+            $archive->update([
                 'file_name' => $file->getClientOriginalName(),
                 'google_drive_file_id' => $googleFile->id,
                 'google_drive_link' => $googleFile->webViewLink,
-                'description' => $request->description,
             ]);
 
-            // Delete from temp
             unlink($fullPath);
+            \Illuminate\Support\Facades\Cache::flush();
 
-            // Clear Cache
-            \Illuminate\Support\Facades\Cache::flush(); // Flush is safer for dynamic filter keys
-
-            return redirect()->route('dashboard')->with('success', 'Arsip berhasil diunggah.');
+            return back()->with('success', 'File berhasil diunggah ke arsip.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('EROR UPLOAD ARSIP: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
-            // Cleanup temp if failed
             if (file_exists($fullPath)) unlink($fullPath);
-            return back()->withErrors(['file' => 'Gagal mengunggah ke Google Drive: ' . $e->getMessage()]);
+            return back()->with('error', 'Gagal mengunggah file: ' . $e->getMessage());
         }
     }
 

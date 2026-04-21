@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/archives/my', [ArchiveController::class, 'myArchives'])->name('archives.my');
     Route::get('/archives/create', [ArchiveController::class, 'create'])->name('archives.create');
     Route::post('/archives', [ArchiveController::class, 'store'])->name('archives.store');
+    Route::post('/archives/{id}/update-file', [ArchiveController::class, 'updateFile'])->name('archives.update-file');
     Route::delete('/archives/{archive}', [ArchiveController::class, 'destroy'])->name('archives.destroy');
 
     Route::resource('users', UserController::class);
