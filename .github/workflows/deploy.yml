@@ -1,0 +1,43 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install Composer Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Install NPM Dependencies & Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Sync Files to Hostinger (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Pastikan folder target di Hostinger sesuai (misal: /public_html/zi)
+          server-dir: ./ 
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/storage/app/temp/**
+            **/tests/**
+            .env
