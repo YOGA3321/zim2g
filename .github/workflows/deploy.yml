@@ -33,7 +33,7 @@ jobs:
           ARGS: "-rlgoDzvc -i --delete"
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-          REMOTE_PORT: ${{ secrets.SSH_PORT }}
+          PORT: ${{ secrets.SSH_PORT }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
           EXCLUDE: "/node_modules/, /.git/, /storage/app/temp/"
 
