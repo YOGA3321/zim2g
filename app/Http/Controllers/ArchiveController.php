@@ -79,6 +79,8 @@ class ArchiveController extends Controller
         $tempPath = $file->storeAs('temp', $fileName);
         $fullPath = storage_path('app/' . $tempPath);
 
+        \Illuminate\Support\Facades\Log::info('Proses Upload Dimulai', ['file' => $fileName]);
+
         try {
             // Upload to Google Drive
             $googleFile = $driveService->upload($fullPath, $file->getClientOriginalName());
@@ -101,6 +103,9 @@ class ArchiveController extends Controller
 
             return redirect()->route('dashboard')->with('success', 'Arsip berhasil diunggah.');
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('EROR UPLOAD ARSIP: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
             // Cleanup temp if failed
             if (file_exists($fullPath)) unlink($fullPath);
             return back()->withErrors(['file' => 'Gagal mengunggah ke Google Drive: ' . $e->getMessage()]);
