@@ -8,7 +8,7 @@ class ArchiveController extends Controller
 {
     public function index(Request $request)
     {
-        $cacheKey = 'archives_' . md5(json_encode($request->all()));
+        $cacheKey = 'archives_v2_' . md5(json_encode($request->all()));
         
         $archives = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function() use ($request) {
             $query = \App\Models\Archive::with(['user', 'component.area']);
@@ -41,6 +41,12 @@ class ArchiveController extends Controller
         return view('archives.index', compact('archives', 'areas', 'users'));
     }
 
+
+    public function show($id)
+    {
+        $archive = \App\Models\Archive::with(['component.area', 'user'])->findOrFail($id);
+        return view('archives.show', compact('archive'));
+    }
 
     public function myArchives()
     {

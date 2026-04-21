@@ -86,10 +86,10 @@
                             <td class="px-8 py-6">
                                 <div class="flex items-center gap-2">
                                     @if($archive->file_name)
-                                        <a href="{{ $archive->google_drive_link }}" target="_blank" 
+                                        <a href="{{ route('archives.show', $archive->id) }}" 
                                            class="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                                           title="Lihat di Drive">
-                                            <i class="fas fa-external-link-alt"></i>
+                                           title="Lihat Detail Wadah">
+                                            <i class="fas fa-folder-open"></i>
                                         </a>
                                     @else
                                         <button onclick="openUploadModal('{{ $archive->id }}', '{{ $archive->component->name }}')"
