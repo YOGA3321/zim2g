@@ -17,8 +17,9 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Tahun</label>
+                        <label class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Pilih Tahun</label>
                         <select name="year" required class="w-full rounded-xl border-gray-200 bg-gray-50 focus:ring-green-500 focus:border-green-500 py-3 font-bold text-gray-600 transition-all hover:bg-white cursor-pointer">
+                            <option value="">-- Pilih Tahun --</option>
                             @php
                                 $currentYear = date('Y');
                             @endphp
@@ -29,31 +30,32 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Sub Komponen / Indikator</label>
-                        <select name="zi_sub_component_id" required class="w-full rounded-xl border-gray-200 bg-gray-50 focus:ring-green-500 focus:border-green-500 py-3 font-bold text-gray-600 transition-all hover:bg-white cursor-pointer">
+                        <label class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Pilih Kegiatan (Komponen)</label>
+                        <select id="kegiatan" required class="w-full rounded-xl border-gray-200 bg-gray-50 focus:ring-green-500 focus:border-green-500 py-3 font-bold text-gray-600 transition-all hover:bg-white cursor-pointer">
+                            <option value="">-- Pilih Kegiatan --</option>
                             @foreach($areas as $area)
-                                @foreach($area->components as $ziComponent)
-                                    <optgroup label="Area {{ $area->code }}: {{ $ziComponent->name }}">
-                                        @foreach($ziComponent->subComponents as $sub)
-                                            <option value="{{ $sub->id }}">{{ $sub->code }} - {{ $sub->name }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                @endforeach
+                                <option value="{{ $area->id }}">{{ $area->name }}</option>
                             @endforeach
                         </select>
                     </div>
+                </div>
 
+                <div id="sub-kegiatan-container" class="hidden">
+                    <label class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Pilih Sub Kegiatan (Unsur Utama)</label>
+                    <select id="sub_kegiatan" name="zi_component_id" required class="w-full rounded-xl border-gray-200 bg-gray-50 focus:ring-green-500 focus:border-green-500 py-3 font-bold text-gray-600 transition-all hover:bg-white cursor-pointer">
+                        <option value="">-- Pilih Sub Kegiatan --</option>
+                    </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Pilih File</label>
-                    <div class="relative border-2 border-dashed border-gray-200 rounded-2xl p-10 text-center hover:border-green-400 transition-all bg-gray-50 group">
-                        <input type="file" name="file" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <div id="dropzone" class="relative border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center hover:border-green-500 hover:bg-green-50 transition-all cursor-pointer group">
+                        <input type="file" name="file" id="file_input" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                         <div class="space-y-4">
                             <div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-all">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                             </div>
-                            <div class="text-gray-500">
+                            <div id="file_info" class="text-gray-500">
                                 <span class="font-bold text-green-700">Klik untuk upload</span> atau drag and drop
                                 <p class="text-xs mt-1">PDF, DOCX, XLSX (Max 10MB)</p>
                             </div>
@@ -77,4 +79,50 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const areas = @json($areas);
+        const kegiatanSelect = document.getElementById('kegiatan');
+        const subKegiatanSelect = document.getElementById('sub_kegiatan');
+        const subContainer = document.getElementById('sub-kegiatan-container');
+        const fileInput = document.getElementById('file_input');
+        const fileInfo = document.getElementById('file_info');
+
+        // Handle Dynamic Dropdown
+        kegiatanSelect.addEventListener('change', function() {
+            const areaId = this.value;
+            subKegiatanSelect.innerHTML = '<option value="">-- Pilih Sub Kegiatan --</option>';
+            
+            if (areaId) {
+                const selectedArea = areas.find(a => a.id == areaId);
+                if (selectedArea && selectedArea.components.length > 0) {
+                    selectedArea.components.forEach(comp => {
+                        const option = document.createElement('option');
+                        option.value = comp.id;
+                        option.text = `${comp.code} - ${comp.name}`;
+                        subKegiatanSelect.appendChild(option);
+                    });
+                    subContainer.classList.remove('hidden');
+                } else {
+                    subContainer.classList.add('hidden');
+                }
+            } else {
+                subContainer.classList.add('hidden');
+            }
+        });
+
+        // Handle File Selection Preview
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                const fileSize = (this.files[0].size / 1024 / 1024).toFixed(2);
+                fileInfo.innerHTML = `
+                    <span class="font-bold text-green-700">${fileName}</span>
+                    <p class="text-xs mt-1">Ukuran: ${fileSize} MB</p>
+                    <p class="text-xs text-blue-500 font-bold mt-2">Klik lagi untuk mengganti file</p>
+                `;
+                document.getElementById('dropzone').classList.add('bg-green-50', 'border-green-500');
+            }
+        });
+    </script>
 </x-app-layout>

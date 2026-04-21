@@ -44,7 +44,11 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-gray-800">Google Drive Status</h4>
-                    <p class="text-sm text-gray-500">{{ $googleConnected ? 'Terhubung dengan Google Drive' : 'Belum terhubung dengan Google Drive' }}</p>
+                    @if($googleConnected)
+                        <p class="text-sm text-green-600 font-semibold">{{ $googleSetting->google_email ?? 'Terhubung (Email tidak tersedia)' }}</p>
+                    @else
+                        <p class="text-sm text-gray-500">Belum terhubung dengan Google Drive</p>
+                    @endif
                 </div>
             </div>
             @if(!$googleConnected)

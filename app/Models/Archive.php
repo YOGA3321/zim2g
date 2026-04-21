@@ -8,7 +8,7 @@ class Archive extends Model
 {
     protected $fillable = [
         'user_id', 
-        'zi_sub_component_id', 
+        'zi_component_id', 
         'year', 
         'file_name', 
         'google_drive_file_id', 
@@ -21,8 +21,8 @@ class Archive extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function subComponent()
+    public function component()
     {
-        return $this->belongsTo(ZiSubComponent::class, 'zi_sub_component_id');
+        return $this->belongsTo(ZiComponent::class, 'zi_component_id');
     }
 }

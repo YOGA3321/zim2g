@@ -15,10 +15,13 @@ class DashboardController extends Controller
             $yearStats[$year] = \App\Models\Archive::where('year', $year)->count();
         }
 
+        $googleSetting = \App\Models\GoogleSetting::first();
+
         return view('dashboard', [
             'totalArchives' => $totalArchives,
             'years' => $years,
             'yearStats' => $yearStats,
+            'googleSetting' => $googleSetting,
         ]);
     }
 }

@@ -12,9 +12,4 @@ class ZiComponent extends Model
     {
         return $this->belongsTo(ZiArea::class, 'zi_area_id');
     }
-
-    public function subComponents()
-    {
-        return $this->hasMany(ZiSubComponent::class, 'zi_component_id');
-    }
 }

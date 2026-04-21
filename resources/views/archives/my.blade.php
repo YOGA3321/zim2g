@@ -45,10 +45,10 @@
                             <span class="bg-green-100 text-green-700 px-3 py-1 rounded-lg font-bold text-xs">{{ $archive->year }}</span>
                         </td>
                         <td class="px-8 py-6 text-gray-700 font-semibold text-xs leading-relaxed max-w-[200px]">
-                            {{ $archive->component->area->code }}. {{ $archive->component->area->name }}
+                            {{ $archive->component->area->name }}
                         </td>
                         <td class="px-8 py-6 text-gray-500 text-xs leading-relaxed max-w-[300px]">
-                            {{ $archive->component->code }}. {{ $archive->component->name }}
+                            {{ $archive->component->code }} - {{ $archive->component->name }}
                         </td>
                         <td class="px-8 py-6 text-center">
                             <a href="{{ $archive->google_drive_link }}" target="_blank" class="inline-flex items-center space-x-1 border border-green-200 text-green-600 px-3 py-1 rounded-lg hover:bg-green-50 transition-all text-[10px] font-bold">

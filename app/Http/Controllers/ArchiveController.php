@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 
 class ArchiveController extends Controller
 {
-    public function index(\Illuminate\Http\Request $request)
+    public function index(Request $request)
     {
         $cacheKey = 'archives_' . md5(json_encode($request->all()));
         
         $archives = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function() use ($request) {
-            $query = \App\Models\Archive::with(['user', 'subComponent.component.area']);
+            $query = \App\Models\Archive::with(['user', 'component.area']);
             
             if ($request->filled('year')) {
                 $query->where('year', $request->year);
@@ -22,7 +22,7 @@ class ArchiveController extends Controller
             }
 
             if ($request->filled('area_id')) {
-                $query->whereHas('subComponent.component', function($q) use ($request) {
+                $query->whereHas('component', function($q) use ($request) {
                     $q->where('zi_area_id', $request->area_id);
                 });
             }
@@ -56,18 +56,18 @@ class ArchiveController extends Controller
         if (auth()->user()->role !== 'admin') {
             abort(403, 'User cannot add archives.');
         }
-        $areas = \App\Models\ZiArea::with('components.subComponents')->get();
+        $areas = \App\Models\ZiArea::with('components')->get();
         return view('archives.create', compact('areas'));
     }
 
-    public function store(\Illuminate\Http\Request $request, \App\Services\GoogleDriveService $driveService)
+    public function store(Request $request, \App\Services\GoogleDriveService $driveService)
     {
         if (auth()->user()->role !== 'admin') {
             abort(403, 'User cannot add archives.');
         }
 
         $request->validate([
-            'zi_sub_component_id' => 'required|exists:zi_sub_components,id',
+            'zi_component_id' => 'required|exists:zi_components,id',
             'year' => 'required|integer',
             'file' => 'required|file',
         ]);
@@ -85,7 +85,7 @@ class ArchiveController extends Controller
             
             \App\Models\Archive::create([
                 'user_id' => auth()->id(),
-                'zi_sub_component_id' => $request->zi_sub_component_id,
+                'zi_component_id' => $request->zi_component_id,
                 'year' => $request->year,
                 'file_name' => $file->getClientOriginalName(),
                 'google_drive_file_id' => $googleFile->id,

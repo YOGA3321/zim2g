@@ -30,6 +30,7 @@ class GoogleAuthController extends Controller
             $setting = GoogleSetting::firstOrNew([]);
             $setting->access_token = $user->token;
             $setting->refresh_token = $user->refreshToken ?? $setting->refresh_token;
+            $setting->google_email = $user->email;
             $setting->expires_at = now()->addSeconds($user->expiresIn);
             $setting->save();
 

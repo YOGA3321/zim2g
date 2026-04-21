@@ -60,19 +60,12 @@ class ZiMasterDataSeeder extends Seeder
                 'name' => $code // Area 1, Area 2 etc
             ]);
 
-            $component = \App\Models\ZiComponent::create([
+            // Create Component as the main item under Area
+            \App\Models\ZiComponent::create([
                 'zi_area_id' => $area->id,
                 'code' => $code,
                 'name' => $info['name'] // Manajemen Perubahan etc
             ]);
-
-            foreach ($info['subs'] as $subCode => $subName) {
-                \App\Models\ZiSubComponent::create([
-                    'zi_component_id' => $component->id,
-                    'code' => $subCode,
-                    'name' => $subName
-                ]);
-            }
         }
     }
 }

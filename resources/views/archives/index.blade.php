@@ -64,10 +64,10 @@
                         </td>
                         <td class="px-8 py-6">
                             <div class="font-bold text-gray-700 text-sm">
-                                {{ $archive->subComponent->component->area->code }}. {{ $archive->subComponent->component->area->name }}
+                                {{ $archive->component->area->name }}
                             </div>
                             <div class="text-xs text-gray-500 mt-1">
-                                {{ $archive->subComponent->code }}. {{ $archive->subComponent->name }}
+                                {{ $archive->component->code }} - {{ $archive->component->name }}
                             </div>
                         </td>
                         <td class="px-8 py-6">

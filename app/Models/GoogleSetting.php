@@ -9,6 +9,7 @@ class GoogleSetting extends Model
     protected $fillable = [
         'access_token',
         'refresh_token',
+        'google_email',
         'expires_at',
         'root_folder_id'
     ];
