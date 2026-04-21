@@ -1,4 +1,4 @@
-name: Deploy via SSH (Custom Port)
+name: Deploy via FTP
 
 on:
   push:
@@ -26,24 +26,17 @@ jobs:
           npm install
           npm run build
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-
-      - name: Deploy Files via Rsync
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz \
-            -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
-            --exclude='node_modules' \
-            --exclude='.git' \
-            --exclude='.env' \
-            --exclude='storage/app/temp' \
-            --exclude='tests' \
-            ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.REMOTE_TARGET }}/
-
-      - name: Run Remote Commands
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh \
-            -p ${{ secrets.SSH_PORT }} \
-            -o StrictHostKeyChecking=no \
-            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
-            "cd ${{ secrets.REMOTE_TARGET }} && php artisan storage:link 2>/dev/null; php artisan migrate --force && php artisan optimize && php artisan view:clear && php artisan config:clear"
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/tests/**
+            **/.env
+            **/storage/app/temp/**
