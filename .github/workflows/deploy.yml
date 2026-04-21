@@ -32,7 +32,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT }} # Jika masih gagal, ganti ${{ secrets.SSH_PORT }} dengan angka port asli (misal: 65002)
           TARGET: ${{ secrets.REMOTE_TARGET }}
           ARGS: "-rlgoDzvc -i --delete"
           EXCLUDE: "/node_modules/, /.git/, /storage/app/temp/"
